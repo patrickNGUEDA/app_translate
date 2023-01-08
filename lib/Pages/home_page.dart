@@ -106,6 +106,7 @@ class _BodyState extends State<Body> {
                     title: Text(data['MotFrancais']),
                     subtitle: Text(data['MotLocal']),
                   );
+                  // return Text( " ${data['MotFrancais']} ${data['MotFrancais']}");
                 }).toList(),
               );
             },
