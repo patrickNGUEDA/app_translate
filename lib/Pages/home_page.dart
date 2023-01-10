@@ -74,7 +74,15 @@ class Body extends StatefulWidget {
 class _BodyState extends State<Body> {
   final Stream<QuerySnapshot> _traductionStream =
       FirebaseFirestore.instance.collection('Traductions').snapshots();
+  final myController = TextEditingController();
   // FirebaseFirestore.instance.collection("traduction").get() as Stream<QuerySnapshot<Object?>>;
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // final val = Provider.of<CounterProvider>(context);
@@ -128,25 +136,18 @@ class _BodyState extends State<Body> {
 
           child: Flexible(
             child: TextField(
+              controller: myController,
               maxLines: maxLines,
               textAlign: TextAlign.start,
-              // style: TextStyle(fontSize: 40.0, height: 5.0),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(vertical: 60.0),
                 filled: false,
-                // fillColor: Color(0xFFEFEBE9),
-                //prefixIcon: Icon(Icons.search),
                 labelText: "Saisissez du texte",
                 suffixStyle: TextStyle(fontSize: 40.0),
-                //icon: Icon(Icons.swap_horiz),
-                //suffixIcon: Icon(Icons.remove_red_eye),
-
                 enabledBorder: const OutlineInputBorder(
-                  //  borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: const BorderSide(color: Color(0xFFEFEBE9)),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  // borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(color: Color(0xFFEFEBE9)),
                 ),
               ),
@@ -244,12 +245,17 @@ class _BodyState extends State<Body> {
                         MaterialStateProperty.all(Color(0xFFEFEBE9)),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MotTrduit(title: "Traduire"),
-                        fullscreenDialog: true,
-                      ),
+                    debugPrint(myController.text);
+                    FirebaseFirestore.instance.collection('Traductions').where("MotFrancais", isEqualTo: myController.text).get().then(
+                          (res) => {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => MotTrduit(title: res.docs[0].data()["MotLocal"]),
+                                fullscreenDialog: true,
+                              ),
+                            )
+                          },
+                      onError: (e) => print("Error completing: $e"),
                     );
                   },
                   child: Text(
