@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/src/widgets/framework.dart';
 
 class MotTrduit extends StatefulWidget {
-  const MotTrduit({super.key, required String title});
+  final String title;
+  const MotTrduit({super.key, required this.title});
 
   @override
   State<MotTrduit> createState() => _MotTrduitState();
@@ -38,6 +39,11 @@ class _MotTrduitState extends State<MotTrduit> {
         
         //backgroundColor: Colors.white
       )),
+      body: Column(
+        children: [
+          Text(widget.title)
+        ],
+      ),
     );
   }
 }
